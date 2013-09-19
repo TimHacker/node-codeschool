@@ -1,21 +1,19 @@
 var http = require('http');
 
 var makeRequest = function(message) {
+
 	var options = {
-		host: 'localhost',
-		post: 8081,
+		host: 'www.google.com',
 		path: '/',
-		method: 'POST'
+		method: 'GET'
 	};
 
 	var request = http.request(options, function(response) {
-		response.on('data', function(data) {
-			console.log(data);
-		});
+		response.pipe(process.stdout, { end: false});
 	});
 
-	request.write(message);
+	console.log(message);
 	request.end();
 };
 
-exports = makeRequest;
+exports.makeRequest = makeRequest;
