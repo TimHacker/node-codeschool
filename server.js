@@ -13,6 +13,10 @@ http.createServer(function(request, response) {
 		var progress = (uploadedBytes / fileBytes) * 100;
 		response.write("Progress: " + parseInt(progress, 10) + "%\n");
 	});
+
+	request.on('end', function() {
+		response.end('uploaded!');
+	});
 }).listen(8081);
 
 console.log('listening on 8080...');
