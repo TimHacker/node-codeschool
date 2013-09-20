@@ -19,6 +19,7 @@
     "request": "~2.27.0",
     "node-twitter-api": "~1.1.0",
     "ejs": "~0.8.4",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "bower": "~1.2.6"
   }
 }

@@ -8,18 +8,28 @@ server.listen(8080);
 
 app.set('view engine', 'ejs');
 
-
 app.get('/', function (req, res) {
     res.sendfile(__dirname + "/index.html");
 });
 
 io.sockets.on('connection', function (socket) {
+    socket.on('join', function (name) {
+        socket.set('nickname', name);
+        console.log(name + " joined.");
+    });
+
     console.log('Client connected...');
-    // socket.emit('news', {hello: 'world'});
-    // socket.on('my other event', function (data) {
-    //     console.log(data);
-    // });
+
+    socket.on('messages', function (message) {
+
+        socket.get('nickname', function (err, name) {
+            socket.broadcast.emit('messages', name + ': ' + message);
+            console.log(name + " sent " + message);
+        });
+
+    });
 });
+
 
 //app.listen(8080);
 

@@ -2,17 +2,56 @@
 <html lang="en">
 <head>
 	<title>Test</title>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
 </head>
 <body>
-Hi there!
+<h1>Welcome to the chatterbox forum!</h1>
+
+<form id="chat_form">
+	<input type="text" id="chat_input"></input>
+	<input type="submit"></input>
+</form>
+<div id="status">Connecting...</div>
+<div id="messages">
+    <ul>
+    </ul>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io.connect('http://localhost:8080');
-  // socket.on('news', function (data) {
-  //   console.log(data);
-  //   socket.emit('my other event', { my: 'data' });
-  // });
+  var nickname;
+
+  socket.on('connect', function (data) {
+    nickname = prompt("What is your nickname?");
+    
+    $('#status').html('Connected to chatterbox as ' + nickname);
+
+    socket.emit('join', nickname);    
+  });
+
+  socket.on('messages', function (message) {
+  	console.log(message);
+    insertMessage(message);
+  });
+
+  var insertMessage = function (message) {
+      $('#messages ul').append(
+        $('<li>').append(message)
+        );    
+    };
+
+  $('#chat_form').submit(function (e) {
+	var message = $('#chat_input').val();
+
+	socket.emit('messages', message);
+
+    insertMessage(nickname + ': ' + message);
+    e.preventDefault();
+    $('#chat_input').val('');
+  });
 </script>
 </body>
 </html>
