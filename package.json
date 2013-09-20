@@ -15,6 +15,8 @@
   "author": "Tim Hacker",
   "license": "BSD",
   "dependencies": {
-    "express": "~3.4.0"
+    "express": "~3.4.0",
+    "request": "~2.27.0",
+    "ntwitter": "~0.5.0"
   }
 }
