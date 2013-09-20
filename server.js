@@ -8,21 +8,26 @@ server.listen(8080);
 
 app.set('view engine', 'ejs');
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
     res.sendfile(__dirname + "/index.html");
 });
 
-io.sockets.on('connection', function (socket) {
-    socket.on('join', function (name) {
+io.configure(function() {
+    io.set("transports", ["xhr-polling"]);
+    io.set("polling duration", 10);
+});
+
+io.sockets.on('connection', function(socket) {
+    socket.on('join', function(name) {
         socket.set('nickname', name);
         console.log(name + " joined.");
     });
 
     console.log('Client connected...');
 
-    socket.on('messages', function (message) {
+    socket.on('messages', function(message) {
 
-        socket.get('nickname', function (err, name) {
+        socket.get('nickname', function(err, name) {
             socket.broadcast.emit('messages', '<-- ' + name + ': ' + message);
             console.log(name + " sent " + message);
         });
