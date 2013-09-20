@@ -23,7 +23,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('messages', function (message) {
 
         socket.get('nickname', function (err, name) {
-            socket.broadcast.emit('messages', name + ': ' + message);
+            socket.broadcast.emit('messages', '<-- ' + name + ': ' + message);
             console.log(name + " sent " + message);
         });
 

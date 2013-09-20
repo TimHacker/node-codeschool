@@ -48,7 +48,7 @@
 
 	socket.emit('messages', message);
 
-    insertMessage(nickname + ': ' + message);
+    insertMessage('me: ' + message + ' -->');
     e.preventDefault();
     $('#chat_input').val('');
   });
