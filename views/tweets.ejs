@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tweets</title>
+</head>
+<body>
+	<header><h1>Twitter app</h1>
+	 <h2>Tweets for @<%= name %></h2>
+	</header>
+	<ul>
+		<% tweets.forEach(function(tweet){ %>
+			<li><%= tweet.text %></li>
+	 	<% }); %>
+	</ul>
+</body>
+</html>
