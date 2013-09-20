@@ -1,14 +1,24 @@
 var express = require('express');
 var request = require('request');
 var url = require('url');
-var twitter = require('ntwitter');
+var util = require('util');
+var twitterAPI = require('node-twitter-api');
 
-var twit = new twitter({
-    consumer_key: '1bqgKCYYc3apD7tdIbGXMg',
-    consumer_secret: 'Jkt9XQmb5oRIChqZMK4zgP3vJ3c5OhSPaWtgLtTEQ',
-    access_token_key: '28795209-eFflFcXhNci65Z7DZkcQS4Y94cEiOwoee5vU7vQKr',
-    access_token_secret: 'koJQHYbLcXR7V5UlqTl1h2lP59lCuKZaMFf12tCw'
+var twitter = new twitterAPI({
+    consumerKey: '1bqgKCYYc3apD7tdIbGXMg',
+    consumerSecret: 'Jkt9XQmb5oRIChqZMK4zgP3vJ3c5OhSPaWtgLtTEQ',
+    callback: 'http://yoururl.tld/something'
 });
+
+// var twit = new twitter({
+//     consumer_key: '1bqgKCYYc3apD7tdIbGXMg',
+//     consumer_secret: 'Jkt9XQmb5oRIChqZMK4zgP3vJ3c5OhSPaWtgLtTEQ',
+//     access_token_key: '28795209-eFflFcXhNci65Z7DZkcQS4Y94cEiOwoee5vU7vQKr',
+//     access_token_secret: 'koJQHYbLcXR7V5UlqTl1h2lP59lCuKZaMFf12tCw'
+// });
+
+var access_token_key = '28795209-eFflFcXhNci65Z7DZkcQS4Y94cEiOwoee5vU7vQKr';
+var access_token_secret = 'koJQHYbLcXR7V5UlqTl1h2lP59lCuKZaMFf12tCw';
 
 var app = express();
 
@@ -17,14 +27,21 @@ app.get('/', function(req, res) {
 });
 
 app.get('/tweets/:username', function(req, res) {
-
     var username = req.params.username;
-    console.log("stream of tweets for location");
+    console.log("tweets for user: " + username);
 
-    twit.stream('statuses/filter', {'locations':'-122.75,36.8,-121.75,37.8,-74,40,-73,41'}, function(stream) {
-      stream.on('data', function (data) {
-        console.log(data.text);
-      });
+    twitter.getTimeline('user', {
+        screen_name: username,
+        count: 1
+    }, access_token_key, access_token_secret, function(err, data) {
+
+        if (data !== undefined) {
+            console.log("Created at: " + data[0].created_at + "/nTweet: " + data[0].text);
+        }
+
+        if (err !== null) {
+            console.log(err);
+        }
     });
 });
 
