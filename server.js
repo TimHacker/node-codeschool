@@ -4,7 +4,7 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
-server.listen(80);
+server.listen(8080);
 
 app.set('view engine', 'ejs');
 
