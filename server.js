@@ -10,13 +10,6 @@ var twitter = new twitterAPI({
     callback: 'http://yoururl.tld/something'
 });
 
-// var twit = new twitter({
-//     consumer_key: '1bqgKCYYc3apD7tdIbGXMg',
-//     consumer_secret: 'Jkt9XQmb5oRIChqZMK4zgP3vJ3c5OhSPaWtgLtTEQ',
-//     access_token_key: '28795209-eFflFcXhNci65Z7DZkcQS4Y94cEiOwoee5vU7vQKr',
-//     access_token_secret: 'koJQHYbLcXR7V5UlqTl1h2lP59lCuKZaMFf12tCw'
-// });
-
 var access_token_key = '28795209-eFflFcXhNci65Z7DZkcQS4Y94cEiOwoee5vU7vQKr';
 var access_token_secret = 'koJQHYbLcXR7V5UlqTl1h2lP59lCuKZaMFf12tCw';
 
@@ -36,13 +29,17 @@ app.get('/tweets/:username', function(req, res) {
     }, access_token_key, access_token_secret, function(err, data) {
 
         if (data !== undefined) {
-            console.log("Created at: " + data[0].created_at + "/nTweet: " + data[0].text);
+            console.log("Created at: " + data[0].created_at + "\nTweet: " + data[0].text);
         }
 
         if (err !== null) {
             console.log(err);
         }
+
+        res.end();
     });
+
+
 });
 
 app.listen(8080);
