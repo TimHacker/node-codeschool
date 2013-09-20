@@ -21,7 +21,7 @@ app.get('/', function(req, res) {
 
 app.get('/tweets/:username', function(req, res) {
     var username = req.params.username;
-    console.log("tweets for user: " + username);
+    res.write("Most recent tweet for " + username + "\n");
 
     twitter.getTimeline('user', {
         screen_name: username,
@@ -29,11 +29,11 @@ app.get('/tweets/:username', function(req, res) {
     }, access_token_key, access_token_secret, function(err, data) {
 
         if (data !== undefined) {
-            console.log("Created at: " + data[0].created_at + "\nTweet: " + data[0].text);
+            res.write(JSON.stringify(data[0].text) + "\n");
         }
 
         if (err !== null) {
-            console.log(err);
+            res.write(err);
         }
 
         res.end();
