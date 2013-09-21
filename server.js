@@ -4,7 +4,9 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
-server.listen(process.env.PORT || 8080);
+var port = process.env.PORT || 8080;
+
+server.listen(port);
 
 app.set('view engine', 'ejs');
 
@@ -38,7 +40,7 @@ io.sockets.on('connection', function(socket) {
 
 //app.listen(8080);
 
-console.log("Server has started on port 8080");
+console.log("Server has started on port " + port);
 
 // var express = require("express");
 // var app = express();
