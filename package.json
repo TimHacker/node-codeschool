@@ -20,7 +20,9 @@
     "node-twitter-api": "~1.1.0",
     "ejs": "~0.8.4",
     "socket.io": "~0.9.16",
-    "bower": "~1.2.6"
+    "bower": "~1.2.6",
+    "redis": "~0.8.6",
+    "connect-redis": "~1.4.5"
   },
   "engines": {
     "node": "0.10.x",

@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 
+var redis = require('redis');
+var redisClient = redis.createClient();
+
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
@@ -19,21 +22,48 @@ io.configure(function() {
     io.set("polling duration", 10);
 });
 
+var storeMessage = function(name, data) {
+    var message = JSON.stringify({
+        name: name,
+        data: data
+    });
+
+    redisClient.lpush("messages", message, function(err, response) {
+        redisClient.ltrim("messages", 0, 10);
+        console.log(response);
+    });
+};
+
 io.sockets.on('connection', function(socket) {
+    console.log('Client connected...');
+
     socket.on('join', function(name) {
         socket.set('nickname', name);
+        socket.broadcast.emit("chat", name + " joined the chat");
+
+        redisClient.lrange("messages", 0, -1, function(err, messages) {
+            messages = messages.reverse();
+            console.log("messages from redis: " + messages);
+            console.log("error from redis: " + err);
+
+            messages.forEach(function(message) {
+                message = JSON.parse(message);
+                socket.emit("messages", message.name + ": " + message.data);
+
+                console.log("message from redis: " + message.name + ": " + message.data);
+            });
+        });
+
         console.log(name + " joined.");
     });
 
-    console.log('Client connected...');
-
     socket.on('messages', function(message) {
-
         socket.get('nickname', function(err, name) {
             socket.broadcast.emit('messages', '<-- ' + name + ': ' + message);
+            storeMessage(name, message);
+
             console.log(name + " sent " + message);
         });
-
     });
 });
 
