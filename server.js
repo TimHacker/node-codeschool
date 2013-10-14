@@ -17,10 +17,10 @@ app.get('/', function(req, res) {
     res.sendfile(__dirname + "/index.html");
 });
 
-io.configure(function() {
-    io.set("transports", ["xhr-polling"]);
-    io.set("polling duration", 10);
-});
+// io.configure(function() {
+//     io.set("transports", ["xhr-polling"]);
+//     io.set("polling duration", 10);
+// });
 
 var storeMessage = function(name, data) {
     var message = JSON.stringify({
@@ -41,6 +41,18 @@ io.sockets.on('connection', function(socket) {
         socket.set('nickname', name);
         socket.broadcast.emit("chat", name + " joined the chat");
 
+        socket.broadcast.emit("add chatter", name);
+
+        redisClient.smembers('chatters', function(err, names) {
+            console.log("names: " + names);
+
+            names.forEach(function(name) {
+                socket.emit('add chatter', name);
+            });
+        });
+
+        redisClient.sadd("chatters", name);
+
         redisClient.lrange("messages", 0, -1, function(err, messages) {
             messages = messages.reverse();
             console.log("messages from redis: " + messages);
@@ -55,6 +67,13 @@ io.sockets.on('connection', function(socket) {
         });
 
         console.log(name + " joined.");
+    });
+
+    socket.on('disconnect', function(name) {
+        socket.get('nickname', function(err, name) {
+            socket.broadcast.emit("remove chatter", name);
+            redisClient.srem("chatters", name);
+        });
     });
 
     socket.on('messages', function(message) {

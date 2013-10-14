@@ -13,6 +13,8 @@
 	<input type="text" id="chat_input"></input>
 	<input type="submit"></input>
 </form>
+<ul id="chatters">
+</ul>
 <div id="status">Connecting...</div>
 <div id="messages">
     <ul>
@@ -30,6 +32,16 @@
     $('#status').html('Connected to chatterbox as ' + nickname);
 
     socket.emit('join', nickname);    
+  });
+
+  socket.on("add chatter", function (name) {
+    var chatter = $('<li data-name="' + name + '">' + name + '</li>').data('name', name);
+    $('#chatters').append(chatter);
+  });
+
+  socket.on("remove chatter", function (name) {
+    alert(name + " left the building");
+    $('#chatters li[data-name=' + name + ']').remove();
   });
 
   socket.on('messages', function (message) {
